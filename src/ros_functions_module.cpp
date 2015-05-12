@@ -16,40 +16,155 @@
 
 #include "ros_functions_module.h"
 #include "SimpleIni.h"
-#include "TurtleCommander.h"
+#include "sendCommandsLib.h"
 
 // GLOBAL VARIABLES
-int COUNT_ROS_FUNCTIONS = 19;
+int COUNT_ROS_FUNCTIONS = 22;
+
+#define ADD_NODE_0_FUNCTION(FUNCTION_NAME) \
+lego_functions[function_id] = new FunctionData(function_id + 1, 0, NULL, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_1S1F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[2]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 2, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_2S_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[2]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::STRING; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 2, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_2S2F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[4]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::STRING; \
+Params[2] = FunctionData::FLOAT; \
+Params[3] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 4, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_2S3F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[5]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::STRING; \
+Params[2] = FunctionData::FLOAT; \
+Params[3] = FunctionData::FLOAT; \
+Params[4] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 5, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_2S3F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[5]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::STRING; \
+Params[2] = FunctionData::FLOAT; \
+Params[3] = FunctionData::FLOAT; \
+Params[4] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 5, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_1S2F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[3]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::FLOAT; \
+Params[2] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 3, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_1S3F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[4]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::FLOAT; \
+Params[2] = FunctionData::FLOAT; \
+Params[3] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 4, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_1S4F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[5]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::FLOAT; \
+Params[2] = FunctionData::FLOAT; \
+Params[3] = FunctionData::FLOAT; \
+Params[4] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 5, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_1S6F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[7]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::FLOAT; \
+Params[2] = FunctionData::FLOAT; \
+Params[3] = FunctionData::FLOAT; \
+Params[4] = FunctionData::FLOAT; \
+Params[5] = FunctionData::FLOAT; \
+Params[6] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1, 7, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+#define ADD_NODE_1S7F_FUNCTION(FUNCTION_NAME) \
+Params = new FunctionData::ParamTypes[8]]; \
+Params[0] = FunctionData::STRING; \
+Params[1] = FunctionData::FLOAT; \
+Params[2] = FunctionData::FLOAT; \
+Params[3] = FunctionData::FLOAT; \
+Params[4] = FunctionData::FLOAT; \
+Params[5] = FunctionData::FLOAT; \
+Params[6] = FunctionData::FLOAT; \
+Params[7] = FunctionData::FLOAT; \
+lego_functions[function_id] = new FunctionData(function_id + 1,8, Params, FUNCTION_NAME); \
+function_id++;
+//////
+
+
+#define DEFINE_ALL_FUNCTIONS \
+ADD_NODE_2S3F_FUNCTION("sendHeader")\
+ADD_NODE_2S2F_FUNCTION("sendMultiArrayDimension")\
+ADD_NODE_1S1F_FUNCTION("sendBool")\
+ADD_NODE_1S1F_FUNCTION("sendByte")\
+ADD_NODE_1S1F_FUNCTION("sendChar")\
+ADD_NODE_1S4F_FUNCTION("sendColorRGBA")\
+ADD_NODE_1S1F_FUNCTION("sendFloat64")\
+ADD_NODE_1S1F_FUNCTION("sendInt64")\
+ADD_NODE_2S_FUNCTION("sendString")\
+ADD_NODE_1S2F_FUNCTION("sendTime")\
+ADD_NODE_1S1F_FUNCTION("sendUInt64")\
+ADD_NODE_1S3F_FUNCTION("sendVector3")\
+ADD_NODE_1S6F_FUNCTION("sendAccel")\
+ADD_NODE_1S3F_FUNCTION("sendPoint")\
+ADD_NODE_1S7F_FUNCTION("sendPose")\
+ADD_NODE_1S3F_FUNCTION("sendPose2D")\
+ADD_NODE_1S4F_FUNCTION("sendQuaternion")\
+ADD_NODE_1S7F_FUNCTION("sendTransform")\
+ADD_NODE_1S6F_FUNCTION("sendTwist")\
+ADD_NODE_1S6F_FUNCTION("sendWrench")\
+ADD_NODE_0_FUNCTION("initNode")\
+ADD_NODE_0_FUNCTION("clearNode");
+
 
 ROSFunctionModule::ROSFunctionModule() {
 	ros_functions = new FunctionData*[COUNT_ROS_FUNCTIONS];
 	system_value function_id = 0;
 
-	FunctionData::ParamTypes *Params = new FunctionData::ParamTypes[7];
-	Params[0] = FunctionData::FLOAT;
-	Params[1] = FunctionData::FLOAT;
-	Params[2] = FunctionData::FLOAT;
-	Params[3] = FunctionData::FLOAT;
-	Params[4] = FunctionData::FLOAT;
-	Params[5] = FunctionData::FLOAT;
-	Params[6] = FunctionData::STRING;
+	FunctionData::ParamTypes *Params;
+	function_id=0;
 
-	ros_functions[function_id] = new FunctionData(function_id + 1, 7, Params, "spawnCube");
-	function_id++;
-
-	Params = new FunctionData::ParamTypes[5];
-	Params[0] = FunctionData::FLOAT;
-	Params[1] = FunctionData::FLOAT;
-	Params[2] = FunctionData::FLOAT;
-	Params[3] = FunctionData::FLOAT;
-	Params[4] = FunctionData::STRING;
-
-	ros_functions[function_id] = new FunctionData(function_id + 1, 5, Params, "spawnSphere");
-	function_id++;
-
-	Params = new FunctionData::ParamTypes[1];
-	Params[0] = FunctionData::FLOAT;
-	ros_functions[function_id] = new FunctionData(function_id + 1, 1, Params, "deleteCreatedObject");
+	DEFINE_ALL_FUNCTIONS
 };
 
 FunctionResult* ROSFunctionModule::executeFunction(system_value function_index, void **args) {
@@ -60,31 +175,178 @@ FunctionResult* ROSFunctionModule::executeFunction(system_value function_index, 
 	try {
 		switch (function_index) {
 		case 1: {
-			variable_value *input1 = (variable_value *)args[0];
+			std::string input1((const char *)args[0]);
+			std::string input2((const char *)args[1]);
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			variable_value *input5 = (variable_value *)args[4];
+			sendHeader(input1, input2, *input3, *input4, *input5);
+			break;
+		}
+		case 2: {
+			std::string input1((const char *)args[0]);
+			std::string input2((const char *)args[1]);
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			sendMultiArrayDimension(input1, input2, *input3, *input4);
+			break;
+		}
+		case 3: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			sendBool(input1, *input2);
+			break;
+		}
+		case 4: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			sendByte(input1, *input2);
+			break;
+		}
+		case 5: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			sendChar(input1, *input2);
+			break;
+		}
+		case 6: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			variable_value *input5 = (variable_value *)args[4];
+			sendColorRGBA(input1, *input2, *input3, *input4, *input5);
+			break;
+		}
+		case 7: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			sendFloat64(input1, *input2);
+			break;
+		}
+		case 8: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			sendInt64(input1, *input2);
+			break;
+		}
+		case 9: {
+			std::string input1((const char *)args[0]);
+			std::string input2((const char *)args[1]);
+			sendString(input1, input2);
+			break;
+		}
+		case 10: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			sendTime(input1, *input2, *input3);
+			break;
+		}
+		case 11: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			sendUInt64(input1, *input2);
+			break;
+		}
+		case 12: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			sendVector3(input1, *input2, *input3, *input4);
+			break;
+		}
+		case 13: {
+			std::string input1((const char *)args[0]);
 			variable_value *input2 = (variable_value *)args[1];
 			variable_value *input3 = (variable_value *)args[2];
 			variable_value *input4 = (variable_value *)args[3];
 			variable_value *input5 = (variable_value *)args[4];
 			variable_value *input6 = (variable_value *)args[5];
-			std::string input7((const char *)args[6]);
-			//rez = createCube((int)*input1, (int)*input2, (int)*input3, (int)*input4, (int)*input5, (int)*input6, input7);
+			variable_value *input7 = (variable_value *)args[6];
+			sendAccel(input1, *input2, *input3, *input4, *input5, *input6, *input7);
 			break;
 		}
-		case 2: {
-			variable_value *input1 = (variable_value *)args[0];
+		case 14: {
+			std::string input1((const char *)args[0]);
 			variable_value *input2 = (variable_value *)args[1];
 			variable_value *input3 = (variable_value *)args[2];
 			variable_value *input4 = (variable_value *)args[3];
-			std::string input5((const char *)(args[4]));
-			//rez = createSphere((int)*input1, (int)*input2, (int)*input3, (int)*input4, input5);
+			sendPoint(input1, *input2, *input3, *input4);
 			break;
 		}
-		case 3: {
-			variable_value *input1 = (variable_value *)args[0];
-			//deleteCreatedObject((int)*input1);
+		case 15: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			variable_value *input5 = (variable_value *)args[4];
+			variable_value *input6 = (variable_value *)args[5];
+			variable_value *input7 = (variable_value *)args[6];
+			variable_value *input8 = (variable_value *)args[7];
+			sendPose(input1, *input2, *input3, *input4, *input5, *input6, *input7, *input8);
 			break;
 		}
-		};
+		case 16: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			sendPose2D(input1, *input2, *input3, *input4);
+			break;
+		}
+		case 17: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			variable_value *input5 = (variable_value *)args[4];
+			sendQuaternion(input1, *input2, *input3, *input4, *input5);
+			break;
+		}
+		case 18: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			variable_value *input5 = (variable_value *)args[4];
+			variable_value *input6 = (variable_value *)args[5];
+			variable_value *input7 = (variable_value *)args[6];
+			variable_value *input8 = (variable_value *)args[7];
+			sendTransform(input1, *input2, *input3, *input4, *input5, *input6, *input7, *input8);
+			break;
+		}
+		case 19: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			variable_value *input5 = (variable_value *)args[4];
+			variable_value *input6 = (variable_value *)args[5];
+			variable_value *input7 = (variable_value *)args[6];
+			sendTwist(input1, *input2, *input3, *input4, *input5, *input6, *input7);
+			break;
+		}
+		case 20: {
+			std::string input1((const char *)args[0]);
+			variable_value *input2 = (variable_value *)args[1];
+			variable_value *input3 = (variable_value *)args[2];
+			variable_value *input4 = (variable_value *)args[3];
+			variable_value *input5 = (variable_value *)args[4];
+			variable_value *input6 = (variable_value *)args[5];
+			variable_value *input7 = (variable_value *)args[6];
+			sendWrench(input1, *input2, *input3, *input4, *input5, *input6, *input7);
+			break;
+		}
+		case 21:{
+			initNode();
+		}
+		case 22:{
+			clearNode();
+		}
+
+	};
 		return new FunctionResult(1, rez);
 	}
 	catch (...){
